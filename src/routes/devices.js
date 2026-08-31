@@ -1,6 +1,6 @@
 // A reusable block of code
 function greetUser(username) {
-  return "Hello, " + username + "!";
+return "Hello, " + username + "!";
 }
 
 // Running the function
