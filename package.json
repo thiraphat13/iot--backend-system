@@ -27,5 +27,11 @@
     "prettier": "^3.9.6",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css,json,md}": [
+      "prettier --check",
+      "eslint"
+    ]
   }
 }
