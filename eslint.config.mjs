@@ -14,6 +14,11 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+
+    // เพิ่มการข้ามไฟล์ Auto-generated และ Migrations
+    'migrations/**',
+    'src/prisma/**',
+    '**/*.d.ts',
   ]),
 ]);
 

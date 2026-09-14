@@ -1,0 +1,7 @@
+model Telemetry {
+  id        String   @id @default(uuid())
+  device_id String
+  voltage   Float
+  current   Float
+  timestamp DateTime @default(now())
+}

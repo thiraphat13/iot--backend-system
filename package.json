@@ -1,5 +1,6 @@
 {
   "name": "my-app",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,15 +8,24 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "prisma skills sync || exit 0",
+    "contract:emit": "prisma contract emit"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
+    "@prisma/orm-postgres": "^8.0.0-rc.8",
+    "dotenv": "^17.4.2",
+    "ioredis": "^6.0.0",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@prisma/cli-engine": "^0.2.3",
+    "@prisma/client": "^7.10.0",
     "@tailwindcss/postcss": "^4",
+    "@types/ioredis": "^4.28.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -25,12 +35,13 @@
     "eslint-plugin-prettier": "^5.5.6",
     "husky": "^8.0.0",
     "prettier": "^3.9.6",
+    "prisma": "^8.0.0-rc.10",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css,json,md}": [
-      "prettier --check",
+      "prettier --write",
       "eslint"
     ]
   }
