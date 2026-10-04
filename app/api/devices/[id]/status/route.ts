@@ -3,8 +3,10 @@ import { verifyAuth } from '@/lib/auth';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  // เพิ่มการ await เพื่อแกะค่า id ออกมา
+  const { id } = await params;
   // --- Auth Middleware ---
   const auth = verifyAuth(request);
   if (auth.error) {
@@ -15,7 +17,7 @@ export async function GET(
   // Business Logic หลักของคุณ (เช่น ดึงข้อมูลล่าสุดจาก Redis)
   return NextResponse.json({
     success: true,
-    message: `Viewing status for device ${params.id}`,
+    message: `Viewing status for device ${id}`,
     user: auth.user, // ข้อมูลคนที่ล็อกอิน
   });
 }

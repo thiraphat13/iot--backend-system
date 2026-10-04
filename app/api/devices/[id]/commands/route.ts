@@ -3,8 +3,10 @@ import { verifyAuth } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  // เพิ่มการ await เพื่อแกะค่า id ออกมา
+  const { id } = await params;
   // --- Auth Middleware ---
   const auth = verifyAuth(request);
   if (auth.error) {
@@ -24,6 +26,6 @@ export async function POST(
   // Business Logic หลัก (เช่น สั่งงาน Pi Pico)
   return NextResponse.json({
     success: true,
-    message: `Command sent to device ${params.id} successfully by admin ${auth.user.userId}`,
+    message: `Command sent to device ${id} successfully by admin ${auth.user.userId}`,
   });
 }
