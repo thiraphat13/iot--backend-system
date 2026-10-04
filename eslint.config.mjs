@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    ".agents/**/*", ".claude/**/*", ".cursor/**/*", ".devin/**/*",
 
     // เพิ่มการข้ามไฟล์ Auto-generated และ Migrations
     'migrations/**',
