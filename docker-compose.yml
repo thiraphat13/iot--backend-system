@@ -20,6 +20,13 @@ services:
     restart: always
     ports:
       - '6666:6379'
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
 
 volumes:
   postgres_data:
