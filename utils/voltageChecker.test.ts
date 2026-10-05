@@ -1,6 +1,5 @@
 // utils/voltageChecker.test.ts
 import { checkVoltage } from './voltageChecker';
-
 describe('Voltage Checker Logic', () => {
   // เคส 1: ส่งค่า 260 ต้องคืนค่า 'CRITICAL'
   it('should return CRITICAL when voltage is over 250', () => {
