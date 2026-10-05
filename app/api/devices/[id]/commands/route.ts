@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth } from '@/lib/auth';
 
-export async function GET(
+export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
@@ -12,12 +12,20 @@ export async function GET(
   if (auth.error) {
     return NextResponse.json({ message: auth.error }, { status: auth.status }); // คืนค่า 401
   }
-  // -----------------------
 
-  // Business Logic หลักของคุณ (เช่น ดึงข้อมูลล่าสุดจาก Redis)
+  // --- Role Middleware (AuthZ) ---
+  // เช็ค role จาก Payload ถ้าไม่ใช่ admin ให้ Reject ด้วย 403 Forbidden
+  if (auth.user?.role !== 'admin') {
+    return NextResponse.json(
+      { message: 'Forbidden: Admins only' },
+      { status: 403 },
+    );
+  }
+  // -------------------------------
+
+  // Business Logic หลัก (เช่น สั่งงาน Pi Pico)
   return NextResponse.json({
     success: true,
-    message: `Viewing status for device ${id}`,
-    user: auth.user, // ข้อมูลคนที่ล็อกอิน
+    message: `Command sent to device ${id} successfully by admin ${auth.user.userId}`,
   });
 }

@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_DB: mydatabase
     ports:
-      - '5432:5432'
+      - '5555:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -19,7 +19,42 @@ services:
     container_name: redis_cache
     restart: always
     ports:
-      - '6379:6379'
+      - '6666:6379'
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+
+  api:
+    build: . 
+    ports:
+      - "8888:8080" # เปลี่ยนเลขหน้าเป็น 8888 เพื่อเลี่ยงพอร์ตชน
+    restart: always # เพิ่มบรรทัดนี้ให้ระบบเริ่มใหม่หากต่อ Database/คิว ไม่สำเร็จ
+    environment:
+      - PORT=8080 
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/mydatabase
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - JWT_SECRET=my_super_secret_key_for_pi_pico_dashboard
+    depends_on:
+      - postgres 
+      - redis
+      - rabbitmq
+
+  worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile.worker 
+    restart: always # เพิ่มบรรทัดนี้เพื่อให้ Worker พยายามต่อ RabbitMQ ใหม่
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672 
+    depends_on:
+      - rabbitmq
+
+# ย้าย volumes มาไว้ระดับนอกสุดด้านล่าง
 volumes:
   postgres_data:

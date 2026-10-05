@@ -1,0 +1,12 @@
+FROM node:20-alpine
+WORKDIR /app
+
+# ติดตั้งแพ็กเกจ
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# คัดลอก Source Code
+COPY . .
+
+# กำหนดจุด Run ชี้ไปที่สคริปต์ของ Worker โดยใช้ tsx (หรือ ts-node)[cite: 6]
+CMD ["npx", "tsx", "worker.ts"]
