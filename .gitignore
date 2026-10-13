@@ -45,3 +45,9 @@ dist/
 .claude
 .cursor
 .devin
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
