@@ -1,0 +1,52 @@
+# สำหรับเซิร์ฟเวอร์จริง: ดึง Image จาก Docker Hub แทนการ build จากซอร์สโค้ด
+# ค่า POSTGRES_PASSWORD และ JWT_SECRET อ่านจากไฟล์ .env ที่วางคู่กันบนเซิร์ฟเวอร์
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_broker
+    restart: always
+
+  api:
+    image: thiraphatkhun/iot-api:latest
+    ports:
+      - "8888:8080"
+    restart: always
+    environment:
+      - PORT=8080
+      - HOSTNAME=0.0.0.0
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/mydatabase
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+
+  worker:
+    image: thiraphatkhun/iot-worker:latest
+    restart: always
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+volumes:
+  postgres_data:
